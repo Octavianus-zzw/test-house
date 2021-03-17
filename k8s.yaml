@@ -1,0 +1,44 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: test-house
+  namespace: spring-application
+  labels:
+    app: test-house
+spec:
+  type: NodePort
+  ports:
+    - port: 10200
+      targetPort: 10200
+      nodePort: 31003
+  selector:
+    app: test-house
+
+---
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: test-house
+  namespace: spring-application
+  labels:
+    app: test-house
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: test-house
+  template:
+    metadata:
+      namespace: spring-application
+      labels:
+        app: test-house
+    spec:
+      containers:
+        - name: test-house
+          image: octavianuszzw/test-house:master
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 10200
+      imagePullSecrets:
+        - name: mydockerhubregistrykey
