@@ -1,0 +1,33 @@
+node {
+    def mvnHome = tool 'mvn'
+    def dockerHome = tool 'docker'
+    env.PATH = "${mvnHome}/bin:${env.PATH}"
+    env.PATH = "${dockerHome}/bin:${env.PATH}"
+
+    stage('checkout from git') {
+        checkout([$class: 'GitSCM', branches: [[name: '*/master']], extensions: [], userRemoteConfigs: [[url: 'https://github.com/Octavianus-zzw/test-house']]])
+    }
+    stage('build by maven') {
+        sh '''
+        mvn -DskipTests clean package
+        '''
+    }
+    stage('docker build and push image') {
+        sh '''
+        docker build -t test-house:master .
+        docker tag test-house:master octavianuszzw/test-house:master
+        docker login -u [username] -p [password]
+        docker push octavianuszzw/test-house:master
+        '''
+    }
+    stage('k8s deployment') {
+        withKubeConfig([credentialsId: 'kubectl-config']) {
+          def gitCommitId = sh(script: "git rev-parse HEAD", returnStdout: true).trim()
+          sh """
+          sed -i "s/{BUILD_SIGN_ID}/${gitCommitId}/g" k8s.yaml
+          cat k8s.yaml
+          kubectl apply -f k8s.yaml
+          """
+        }
+    }
+}
