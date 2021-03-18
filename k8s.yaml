@@ -43,5 +43,9 @@ spec:
           env:
             - name: GIT_COMMIT_ID
               value: {BUILD_SIGN_ID}
+          lifecycle:
+            preStop:
+              exec:
+                command: ["curl", "http://localhost:10200/eureka_unregister"]
       imagePullSecrets:
         - name: mydockerhubregistrykey
