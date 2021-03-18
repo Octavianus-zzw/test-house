@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: test-house
+  namespace: spring-application
+  labels:
+    app: test-house
+spec:
+  type: NodePort
+  ports:
+    - port: 10200
+      targetPort: 10200
+      nodePort: 31003
+  selector:
+    app: test-house
