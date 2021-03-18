@@ -22,5 +22,8 @@ spec:
           imagePullPolicy: Always
           ports:
             - containerPort: 10200
+          env:
+            - name: GIT_COMMIT_ID
+              value: {BUDIL_SIGN_ID}
       imagePullSecrets:
         - name: mydockerhubregistrykey
