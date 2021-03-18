@@ -6,7 +6,7 @@ metadata:
   labels:
     app: test-house
 spec:
-  replicas: 2
+  replicas: 1
   selector:
     matchLabels:
       app: test-house
