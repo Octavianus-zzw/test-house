@@ -2,3 +2,4 @@ server.port = 10200
 eureka.client.service-url.defaultZone = http://test-eureka:8080/eureka/
 spring.application.name = test-house
 eureka.instance.appname = ${spring.application.name}
+eureka.instance.preferIpAddress = true
